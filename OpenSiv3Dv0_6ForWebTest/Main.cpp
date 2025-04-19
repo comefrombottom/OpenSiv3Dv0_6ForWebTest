@@ -4,12 +4,13 @@
 void Main()
 {
     
+	TextAreaEditState state;
 
     while (System::Update())
     { 
         ClearPrint();
 
-		Print << U"v6";
+		Print << U"v7";
 
         Print << U"Cursor::Pos() : " << Cursor::Pos();
 
@@ -22,6 +23,8 @@ void Main()
 		Print << U"MouseR.up() : " << MouseR.up();
 
 		Circle(Cursor::Pos(), 10).draw(Palette::Red);
+
+		SimpleGUI::TextArea(state, { 300,100 });
 
     }
 }
