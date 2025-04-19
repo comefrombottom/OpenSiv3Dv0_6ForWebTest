@@ -9,7 +9,7 @@ void Main()
     { 
         ClearPrint();
 
-		Print << U"v4";
+		Print << U"v5";
 
         Print << U"Cursor::Pos() : " << Cursor::Pos();
 
