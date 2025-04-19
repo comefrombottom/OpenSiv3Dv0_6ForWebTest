@@ -9,6 +9,8 @@ void Main()
     { 
         ClearPrint();
 
+		Print << U"v3";
+
         Print << U"Cursor::Pos() : " << Cursor::Pos();
 
 		Print << U"MouseL.pressed() : " << MouseL.pressed();
