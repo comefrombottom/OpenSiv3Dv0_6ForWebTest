@@ -46,7 +46,7 @@ void Main()
 
         //Scene::Resize(GetCanvasSize());
 
-		Print << U"v15";
+		Print << U"v16";
 
         Print << U"Cursor::Pos() : " << Cursor::Pos();
 
