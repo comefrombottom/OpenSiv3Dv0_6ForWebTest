@@ -35,13 +35,16 @@ void Main()
     
 	TextAreaEditState state;
 
+	Window::SetStyle(WindowStyle::Sizable);
+
+
     while (System::Update())
     { 
         ClearPrint();
 
-        Scene::Resize(GetCanvasSize());
+        //Scene::Resize(GetCanvasSize());
 
-		Print << U"v9";
+		Print << U"v10";
 
         Print << U"Cursor::Pos() : " << Cursor::Pos();
 
@@ -57,6 +60,10 @@ void Main()
 
 
         //Print << GetCanvasSize();
+
+        Scene::Rect().drawFrame(3, 0, Palette::Blue);
+        Scene::Rect().drawFrame(0, 3, Palette::Red);
+
 
 
 
