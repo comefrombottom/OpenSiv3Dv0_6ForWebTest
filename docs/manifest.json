@@ -3,8 +3,8 @@
   "short_name": "Game",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#CBCBCB",
-  "theme_color": "#CBCBCB",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "icons": [
     {
       "src": "Siv3DLogo_192.png",
