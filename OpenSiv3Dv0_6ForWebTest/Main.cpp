@@ -37,6 +37,8 @@ void Main()
 
 	Window::SetStyle(WindowStyle::Sizable);
 
+	Scene::SetResizeMode(ResizeMode::Keep);
+
 
     while (System::Update())
     { 
@@ -44,7 +46,7 @@ void Main()
 
         //Scene::Resize(GetCanvasSize());
 
-		Print << U"v11";
+		Print << U"v12";
 
         Print << U"Cursor::Pos() : " << Cursor::Pos();
 
@@ -58,6 +60,18 @@ void Main()
 
 		Print << U"GetViewportSize() : " << GetViewportSize();
 
+		Print << U"GetCanvasSize() : " << GetCanvasSize();
+
+		Print << U"Scene::Size() : " << Scene::Size();
+
+		Print << U"Window::GetState().bounds : " << Window::GetState().bounds;
+
+        Print << U"Window::GetState().frameBufferSize : " << Window::GetState().frameBufferSize;
+        Print << U"Window::GetState().frameSize : " << Window::GetState().frameSize;
+
+
+
+        Print << U"Window::GetState().virtualSize : " << Window::GetState().virtualSize;
 
         //Print << GetCanvasSize();
 
