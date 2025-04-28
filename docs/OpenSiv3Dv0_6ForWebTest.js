@@ -1480,7 +1480,7 @@ var ASM_CONSTS = {
  1294369: () => { var canvas = Module.canvas || document.getElementById('canvas'); return canvas ? canvas.getBoundingClientRect().width : 0; },  
  1294496: () => { var canvas = Module.canvas || document.getElementById('canvas'); return canvas ? canvas.getBoundingClientRect().height : 0; },  
  1294624: () => { return siv3dActiveTouches.length; },  
- 1294662: ($0) => { const touches = siv3dActiveTouches; for (let i = 0; i < touches.length; i++) { const touch = touches[i]; const touchPtr = $0 + i * 16; setValue(touchPtr, touch.identifier, 'i32'); setValue(touchPtr + 4, touch.pageX, 'double'); setValue(touchPtr + 12, touch.pageY, 'double'); } },  
+ 1294662: ($0) => { const touches = siv3dActiveTouches; for (let i = 0; i < touches.length; i++) { const touch = touches[i]; const touchPtr = $0 + i * 24; setValue(touchPtr, touch.identifier, 'i32'); setValue(touchPtr + 8, touch.pageX, 'double'); setValue(touchPtr + 16, touch.pageY, 'double'); } },  
  1294943: () => { setTimeout(function() { _siv3dMaybeAwake(); }, 0) },  
  1294995: () => { setTimeout(function() { _siv3dMaybeAwake(); }, 0) },  
  1295047: () => { if (typeof(AudioContext) !== 'undefined') { return true; } else if (typeof(webkitAudioContext) !== 'undefined') { return true; } return false; },  

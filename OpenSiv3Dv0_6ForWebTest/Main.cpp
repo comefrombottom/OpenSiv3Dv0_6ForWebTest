@@ -36,7 +36,6 @@ struct TouchInfo {
     double x;
     double y;
 };
-//
 
 
 int getTouchesLength()
@@ -56,11 +55,11 @@ Array<TouchInfo> GetTouchesFromBrowser() {
 
         for (let i = 0; i < touches.length; i++) {
             const touch = touches[i];
-            const touchPtr = $0 + i * 16; // TouchInfo のサイズに応じて調整
+            const touchPtr = $0 + i * 24; // TouchInfo のサイズに応じて調整
 
             setValue(touchPtr, touch.identifier, 'i32');
-            setValue(touchPtr + 4, touch.pageX, 'double');
-            setValue(touchPtr + 12, touch.pageY, 'double');
+            setValue(touchPtr + 8, touch.pageX, 'double');
+            setValue(touchPtr + 16, touch.pageY, 'double');
         }
         }, result.data());
 
@@ -137,7 +136,7 @@ void Main()
 
         //Scene::Resize(GetCanvasSize());
 
-		Print << U"v20";
+		Print << U"v21";
 
         Print << U"Cursor::Pos() : " << Cursor::Pos();
 
