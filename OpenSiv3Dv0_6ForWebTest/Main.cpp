@@ -38,9 +38,9 @@ struct TouchInfo {
 };
 
 
-int getTouchesLength()
+int32 getTouchesLength()
 {
-	int length = EM_ASM_INT({
+	int32 length = EM_ASM_INT({
 		return siv3dActiveTouches.length;
 		});
 	return length;
@@ -57,9 +57,11 @@ Array<TouchInfo> GetTouchesFromBrowser() {
             const touch = touches[i];
             const touchPtr = $0 + i * 24; // TouchInfo ÇÃÉTÉCÉYÇ…âûÇ∂Çƒí≤êÆ
 
+            const adjusted = siv3dAdjustPoint(touch.pageX, touch.pageY);
+
             setValue(touchPtr, touch.identifier, 'i32');
-            setValue(touchPtr + 8, touch.pageX, 'double');
-            setValue(touchPtr + 16, touch.pageY, 'double');
+            setValue(touchPtr + 8, adjusted.x, 'double');
+            setValue(touchPtr + 16, adjusted.y, 'double');
         }
         }, result.data());
 
@@ -136,7 +138,7 @@ void Main()
 
         //Scene::Resize(GetCanvasSize());
 
-		Print << U"v21";
+		Print << U"v22";
 
         Print << U"Cursor::Pos() : " << Cursor::Pos();
 
