@@ -71,7 +71,7 @@ Array<TouchInfo> GetTouchesFromBrowser() {
 int32 getTouchesLength2()
 {
     int32 length = EM_ASM_INT({
-		return Browser.touches.length;
+		return Object.keys(Browser.touches).length;
         });
     return length;
 }
@@ -145,7 +145,7 @@ void Main()
 
         //Scene::Resize(GetCanvasSize());
 
-		Print << U"v23";
+		Print << U"v24";
 
         Print << U"Cursor::Pos() : " << Cursor::Pos();
 
