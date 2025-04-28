@@ -68,6 +68,13 @@ Array<TouchInfo> GetTouchesFromBrowser() {
     return result;
 }
 
+int32 getTouchesLength2()
+{
+    int32 length = EM_ASM_INT({
+		return Browser.touches.length;
+        });
+    return length;
+}
 
 /*
 // JavaScriptƒR[ƒh‚ğC++“à‚É–„‚ß‚Ş
@@ -138,7 +145,7 @@ void Main()
 
         //Scene::Resize(GetCanvasSize());
 
-		Print << U"v22";
+		Print << U"v23";
 
         Print << U"Cursor::Pos() : " << Cursor::Pos();
 
@@ -167,7 +174,8 @@ void Main()
 
         //Print << GetCanvasSize();
 
-		Print << U"getTouchesLength() : " << getTouchesLength();
+        Print << U"getTouchesLength() : " << getTouchesLength();
+        Print << U"getTouchesLength2() : " << getTouchesLength2();
 
         const auto touches = GetTouchesFromBrowser();
 
