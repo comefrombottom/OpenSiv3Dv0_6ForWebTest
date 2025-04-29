@@ -128,7 +128,7 @@ void Main()
 
         //Scene::Resize(GetCanvasSize());
 
-		Print << U"v28";
+		Print << U"v29";
 
         Print << U"Cursor::Pos() : " << Cursor::Pos();
 
@@ -146,7 +146,7 @@ void Main()
         }
 
         Print << U"myTouches :";
-        const auto myTouches = GetTouchesFromBrowser();
+        const auto myTouches = GetMyTouches();
         for (const auto& touch : myTouches)
         {
             Print << U"Touch ID: " << touch.id << U", pos: " << touch.pos;
