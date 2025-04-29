@@ -34,34 +34,21 @@ Array<TouchInfo> GetMyTouches() {
     return result;
 }
 
-Vec2 getMousePos()
-{
-    Vec2 v{};
-	
-	v.x = EM_ASM_DOUBLE({
-		return Browser.mouseX;
-		});
-	v.y = EM_ASM_DOUBLE({
-		return Browser.mouseY;
-		});
-	return v;
-}
-
 EM_JS(void, setupMultiTouchHandler, (), {
     // グローバル変数を定義
     window.myTouches = [];
 
-// タッチイベントの処理を設定
-const canvas = Module['canvas'];
+    // タッチイベントの処理を設定
+    const canvas = Module['canvas'];
 
-function updateTouches(e) {
-  window.myTouches = Array.from(e.touches);
-  //e.preventDefault(); // 任意：スクロール防止など
-}
+    function updateTouches(e) {
+      window.myTouches = Array.from(e.touches);
+      //e.preventDefault(); // 任意：スクロール防止など
+    }
 
-canvas.addEventListener("touchstart", updateTouches, false);
-canvas.addEventListener("touchmove", updateTouches, false);
-canvas.addEventListener("touchend", updateTouches, false);
+    canvas.addEventListener("touchstart", updateTouches, false);
+    canvas.addEventListener("touchmove", updateTouches, false);
+    canvas.addEventListener("touchend", updateTouches, false);
     });
 
 
@@ -85,16 +72,13 @@ void Main()
 
         //Scene::Resize(GetCanvasSize());
 
-		Print << U"v30";
+		Print << U"v31";
 
         Print << U"Cursor::Pos() : " << Cursor::Pos();
 
 		Print << U"MouseL.pressed() : " << MouseL.pressed();
 		Print << U"MouseL.down() : " << MouseL.down();
 		Print << U"MouseL.up() : " << MouseL.up();
-
-		Print << U"getMousePos() : " << getMousePos();
-
 
         Print << U"myTouches :";
         const auto myTouches = GetMyTouches();
