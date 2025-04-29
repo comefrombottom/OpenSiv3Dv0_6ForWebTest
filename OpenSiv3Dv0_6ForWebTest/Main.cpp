@@ -57,6 +57,26 @@ Array<TouchInfo> GetTouchesFromBrowser() {
             const touch = touches[i];
             const touchPtr = $0 + i * 24; // TouchInfo のサイズに応じて調整
 
+            setValue(touchPtr, touch.identifier, 'i32');
+            setValue(touchPtr + 8, touch.pageX, 'double');
+            setValue(touchPtr + 16, touch.pageY, 'double');
+        }
+        }, result.data());
+
+    return result;
+}
+
+// タッチ情報を取得する関数
+Array<TouchInfo> GetAdjustedTouchesFromBrowser() {
+    Array<TouchInfo> result = Array<TouchInfo>(getTouchesLength());
+
+    EM_ASM({
+        const touches = siv3dActiveTouches;
+
+        for (let i = 0; i < touches.length; i++) {
+            const touch = touches[i];
+            const touchPtr = $0 + i * 24; // TouchInfo のサイズに応じて調整
+
             const adjusted = siv3dAdjustPoint(touch.pageX, touch.pageY);
 
             setValue(touchPtr, touch.identifier, 'i32');
@@ -74,6 +94,19 @@ int32 getTouchesLength2()
 		return Object.keys(Browser.touches).length;
         });
     return length;
+}
+
+Vec2 getMousePos()
+{
+    Vec2 v{};
+	
+	v.x = EM_ASM_DOUBLE({
+		return Browser.mouseX;
+		});
+	v.y = EM_ASM_DOUBLE({
+		return Browser.mouseY;
+		});
+	return v;
 }
 
 /*
@@ -145,9 +178,11 @@ void Main()
 
         //Scene::Resize(GetCanvasSize());
 
-		Print << U"v24";
+		Print << U"v25";
 
         Print << U"Cursor::Pos() : " << Cursor::Pos();
+		Print << U"Cursor::ScreenPos() : " << Cursor::ScreenPos();
+		Print << U"Cursor::PosRaw() : " << Cursor::PosRaw();
 
 		Print << U"MouseL.pressed() : " << MouseL.pressed();
 		Print << U"MouseL.down() : " << MouseL.down();
@@ -173,6 +208,7 @@ void Main()
         Print << U"Window::GetState().virtualSize : " << Window::GetState().virtualSize;
 
         //Print << GetCanvasSize();
+		Print << U"getMousePos() : " << getMousePos();
 
         Print << U"getTouchesLength() : " << getTouchesLength();
         Print << U"getTouchesLength2() : " << getTouchesLength2();
@@ -183,6 +219,13 @@ void Main()
 		{
 			Print << U"Touch ID: " << touch.id << U", X: " << touch.x << U", Y: " << touch.y;
 		}
+
+        const auto adjTouches = GetAdjustedTouchesFromBrowser();
+		Print << U"Adjusted Touches:";
+        for (const auto& touch : adjTouches)
+        {
+            Print << U"Touch ID: " << touch.id << U", X: " << touch.x << U", Y: " << touch.y;
+        }
 
 
         Scene::Rect().drawFrame(3, 0, Palette::Blue);
