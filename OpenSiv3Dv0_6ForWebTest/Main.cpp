@@ -109,68 +109,52 @@ Vec2 getMousePos()
 	return v;
 }
 
-/*
-// JavaScriptコードをC++内に埋め込む
-EM_JS(void, setupMultiTouchHandler, (), {
-    const canvas = Module.canvas || document.getElementById('canvas');
-
-    if (!canvas) {
-        console.error("Canvas not found");
-        return;
-    }
-
-    // タッチ開始時
-    canvas.addEventListener('touchstart', (event) = > {
-        for (const touch of event.touches) {
-            ccall('onTouchStart', null,['number', 'number', 'number'],[touch.identifier, touch.clientX, touch.clientY]);
-        }
-        event.preventDefault();
-    });
-
-    // タッチ移動時
-    canvas.addEventListener('touchmove', (event) = > {
-        for (const touch of event.touches) {
-            ccall('onTouchMove', null,['number', 'number', 'number'],[touch.identifier, touch.clientX, touch.clientY]);
-        }
-        event.preventDefault();
-    });
-
-    // タッチ終了時
-    canvas.addEventListener('touchend', (event) = > {
-        for (const touch of event.changedTouches) {
-            ccall('onTouchEnd', null,['number', 'number', 'number'],[touch.identifier, -1, -1]); // -1, -1でタッチ終了を示す
-        }
-        event.preventDefault();
-    });
-});
-
-// タッチ開始時の処理
-extern "C" void onTouchStart(int id, int x, int y) {
-    Console << U"Touch Start - ID: " << id << U", X: " << x << U", Y: " << y;
+bool getPointerLock() {
+	int32 r = EM_ASM_INT({
+		return Browser.pointerLock;
+		});
+	return r != 0;
 }
 
-// タッチ移動時の処理
-extern "C" void onTouchMove(int id, int x, int y) {
-    Console << U"Touch Move - ID: " << id << U", X: " << x << U", Y: " << y;
-}
 
-// タッチ終了時の処理
-extern "C" void onTouchEnd(int id, int x, int y) {
-    Console << U"Touch End - ID: " << id << U", X: " << x << U", Y: " << y;
-}
 
-*/
+
 
 void Main()
 {
     // JavaScriptのタッチイベントハンドラをセットアップ
     //setupMultiTouchHandler();
     
-	TextAreaEditState state;
+	//TextAreaEditState state;
+
+    Window::Resize(800, 900);
 
 	Window::SetStyle(WindowStyle::Sizable);
 
 	Scene::SetResizeMode(ResizeMode::Keep);
+    /*
+    function siv3dOnTouchMove(e) {
+        siv3dActiveTouches = Array.from(e.touches);
+        // e.stopPropagation();
+    }
+
+    function siv3dOnTouchStart(e) {
+        siv3dActiveTouches = Array.from(e.touches);
+        // e.preventDefault()
+    }
+    function _siv3dRegisterTouchCallback() {
+        Module["canvas"].addEventListener("touchstart", siv3dOnTouchStart);
+        Module["canvas"].addEventListener("touchmove", siv3dOnTouchMove);
+    }
+    にならってtouchendの処理をC++側で追記
+    */
+
+	
+    EM_ASM({
+    Module["canvas"].addEventListener("touchend", function(e) {
+        siv3dActiveTouches = Array.from(e.touches);
+    });
+        });
     
     while (System::Update())
     { 
@@ -178,7 +162,7 @@ void Main()
 
         //Scene::Resize(GetCanvasSize());
 
-		Print << U"v25";
+		Print << U"v26";
 
         Print << U"Cursor::Pos() : " << Cursor::Pos();
 		Print << U"Cursor::ScreenPos() : " << Cursor::ScreenPos();
@@ -212,6 +196,9 @@ void Main()
 
         Print << U"getTouchesLength() : " << getTouchesLength();
         Print << U"getTouchesLength2() : " << getTouchesLength2();
+		Print << U"getPointerLock() : " << getPointerLock();
+
+        
 
         const auto touches = GetTouchesFromBrowser();
 
@@ -227,6 +214,11 @@ void Main()
             Print << U"Touch ID: " << touch.id << U", X: " << touch.x << U", Y: " << touch.y;
         }
 
+        for (const auto& touch : adjTouches) {
+            Vec2 pos = Scene::ClientToScene({ touch.x,touch.y });
+            Circle(pos, 15).drawFrame(1, Palette::Blue);
+        }
+
 
         Scene::Rect().drawFrame(3, 0, Palette::Blue);
         Scene::Rect().drawFrame(0, 3, Palette::Red);
@@ -236,7 +228,7 @@ void Main()
 
 		Circle(Cursor::Pos(), 10).drawFrame(1,Palette::Red);
 
-		SimpleGUI::TextArea(state, { 300,100 });
+		//SimpleGUI::TextArea(state, { 300,100 });
 
     }
 }
