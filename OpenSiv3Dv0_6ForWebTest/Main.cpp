@@ -7,17 +7,8 @@ struct TouchInfo {
     Vec2 pos;
 };
 
-int32 getTouchesLength()
-{
-	int32 length = EM_ASM_INT({
-		return siv3dActiveTouches.length;
-		});
-	return length;
-}
-
-
 // タッチ情報を取得する関数
-Array<TouchInfo> GetAdjustedTouchesFromBrowser() {
+Array<TouchInfo> GetTouchesFromBrowser() {
     Array<TouchInfo> result = Array<TouchInfo>(EM_ASM_INT({return siv3dActiveTouches.length;}));
 
     EM_ASM({
@@ -43,12 +34,31 @@ Array<TouchInfo> GetAdjustedTouchesFromBrowser() {
     return result;
 }
 
-int32 getTouchesLength2()
-{
-    int32 length = EM_ASM_INT({
-		return Object.keys(Browser.touches).length;
-        });
-    return length;
+// タッチ情報を取得する関数
+Array<TouchInfo> GetMyTouches() {
+    Array<TouchInfo> result = Array<TouchInfo>(EM_ASM_INT({ return window.myTouches.length; }));
+
+    EM_ASM({
+        const touches = window.myTouches;
+
+        for (let i = 0; i < touches.length; i++) {
+            const touch = touches[i];
+            const touchPtr = $0 + i * 24; // TouchInfo のサイズに応じて調整
+
+            const adjusted = siv3dAdjustPoint(touch.pageX, touch.pageY);
+
+            setValue(touchPtr, touch.identifier, 'i32');
+            setValue(touchPtr + 8, adjusted.x, 'double');
+            setValue(touchPtr + 16, adjusted.y, 'double');
+        }
+        }, result.data());
+
+    for (auto& touch : result)
+    {
+        touch.pos = Scene::ClientToScene(touch.pos);
+    }
+
+    return result;
 }
 
 Vec2 getMousePos()
@@ -71,18 +81,22 @@ bool getPointerLock() {
 	return r != 0;
 }
 
-bool getSDLisDefined()
-{
-	return EM_ASM_INT({
-        if (typeof SDL != "undefined") {
-            return 1;
-        }
-        else {
-            return 0;
-        }
-	});
+EM_JS(void, setup_touch_handlers, (), {
+    // グローバル変数を定義
+    window.myTouches = [];
+
+// タッチイベントの処理を設定
+const canvas = Module['canvas'];
+
+function updateTouches(e) {
+  window.myTouches = Array.from(e.touches);
+  //e.preventDefault(); // 任意：スクロール防止など
 }
 
+canvas.addEventListener("touchstart", updateTouches, false);
+canvas.addEventListener("touchmove", updateTouches, false);
+canvas.addEventListener("touchend", updateTouches, false);
+    });
 
 
 void Main()
@@ -100,10 +114,12 @@ void Main()
 	Scene::SetResizeMode(ResizeMode::Keep);
 	
     EM_ASM({
-    Module["canvas"].addEventListener("touchend", function(e) {
-        siv3dActiveTouches = Array.from(e.touches);
-    });
+        Module["canvas"].addEventListener("touchend", function(e) {
+            siv3dActiveTouches = Array.from(e.touches);
         });
+        });
+
+	setup_touch_handlers();
     
     while (System::Update())
     { 
@@ -112,7 +128,7 @@ void Main()
 
         //Scene::Resize(GetCanvasSize());
 
-		Print << U"v27";
+		Print << U"v28";
 
         Print << U"Cursor::Pos() : " << Cursor::Pos();
 
@@ -122,14 +138,16 @@ void Main()
 
 		Print << U"getMousePos() : " << getMousePos();
 
-        Print << U"getTouchesLength() : " << getTouchesLength();
-        Print << U"getTouchesLength2() : " << getTouchesLength2();
-		Print << U"getSDLisDefined() : " << getSDLisDefined();
 
-        
-
-        const auto adjTouches = GetAdjustedTouchesFromBrowser();
+        const auto adjTouches = GetTouchesFromBrowser();
         for (const auto& touch : adjTouches)
+        {
+            Print << U"Touch ID: " << touch.id << U", pos: " << touch.pos;
+        }
+
+        Print << U"myTouches :";
+        const auto myTouches = GetTouchesFromBrowser();
+        for (const auto& touch : myTouches)
         {
             Print << U"Touch ID: " << touch.id << U", pos: " << touch.pos;
         }
