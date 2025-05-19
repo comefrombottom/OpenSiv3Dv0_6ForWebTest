@@ -78,7 +78,7 @@ void Main()
 
         //Scene::Resize(GetCanvasSize());
 
-		Print << U"v33";
+		Print << U"v34";
 
         Print << U"Cursor::Pos() : " << Cursor::Pos();
 
@@ -100,6 +100,10 @@ void Main()
 		{
 			changeNum++;
 		}
+
+		Print << U"changeNum : " << changeNum;
+		Print << U"downNum : " << downNum;
+		Print << U"upNum : " << upNum;
 
 		pre_pressed = MouseL.pressed();
 
