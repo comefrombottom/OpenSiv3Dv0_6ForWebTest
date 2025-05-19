@@ -55,7 +55,7 @@ EM_JS(void, setupMultiTouchHandler, (), {
 void Main()
 {
     // JavaScriptのタッチイベントハンドラをセットアップ
-    setupMultiTouchHandler();
+    // setupMultiTouchHandler();
     
 	//TextAreaEditState state;
 
@@ -64,6 +64,12 @@ void Main()
 	Window::SetStyle(WindowStyle::Sizable);
 
 	Scene::SetResizeMode(ResizeMode::Keep);
+
+	bool pre_pressed = false;
+
+	int32 changeNum = 0;
+	int32 downNum = 0;
+	int32 upNum = 0;
 	
     while (System::Update())
     { 
@@ -72,7 +78,7 @@ void Main()
 
         //Scene::Resize(GetCanvasSize());
 
-		Print << U"v32";
+		Print << U"v33";
 
         Print << U"Cursor::Pos() : " << Cursor::Pos();
 
@@ -80,16 +86,33 @@ void Main()
 		Print << U"MouseL.down() : " << MouseL.down();
 		Print << U"MouseL.up() : " << MouseL.up();
 
+		if (MouseL.down())
+		{
+			downNum++;
+		}
+
+		if (MouseL.up())
+		{
+			upNum++;
+		}
+
+		if (pre_pressed != MouseL.pressed())
+		{
+			changeNum++;
+		}
+
+		pre_pressed = MouseL.pressed();
+
         Print << U"myTouches :";
-        const auto myTouches = GetMyTouches();
-        for (const auto& touch : myTouches)
+        // const auto myTouches = GetMyTouches();
+        /*for (const auto& touch : myTouches)
         {
             Print << U"Touch ID: " << touch.id << U", pos: " << touch.pos;
         }
 
         for (const auto& touch : myTouches) {
             Circle(touch.pos, 30).drawFrame(1, Palette::Blue);
-        }
+        }*/
 
 		Circle(Cursor::Pos(), 10).drawFrame(1,Palette::Red);
 
